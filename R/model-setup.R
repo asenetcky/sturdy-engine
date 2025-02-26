@@ -21,26 +21,26 @@ data <-
     )
   )
 
-top_departments <- 
-  data |> 
-  dplyr::count(dept, sort = TRUE) |> 
+top_departments <-
+  data |>
+  dplyr::count(dept, sort = TRUE) |>
   dplyr::slice_head(n = 10)
 
 top_jobs <-
-  data |> 
-  dplyr::count(job, sort = TRUE) |> 
+  data |>
+  dplyr::count(job, sort = TRUE) |>
   dplyr::slice_head(n = 10)
 
-data <- 
-  data |> 
+data <-
+  data |>
   dplyr::filter(
-    job %in% top_jobs$job & 
+    job %in% top_jobs$job &
       dept %in% top_departments$dept
-  ) |> 
-  dplyr::slice_sample(n = 30000) |> 
+  ) |>
+  dplyr::slice_sample(n = 30000) |>
   dplyr::mutate(
     salary = as.double(salary),
-    dept  = as.factor(dept),
+    dept = as.factor(dept),
     job = as.factor(job)
   )
 
@@ -69,7 +69,7 @@ v_model <-
     model,
     model_name = "payroll-model",
     save_prototype = example_for_api_doco,
-    versioned =  TRUE
+    versioned = TRUE
   )
 
 ## Save model into `pins` board
@@ -89,7 +89,7 @@ vetiver::vetiver_pin_write(
   check_renv = TRUE
 )
 
-## create dockerfile 
+## create dockerfile
 
 vetiver::vetiver_prepare_docker(
   board = model_board,

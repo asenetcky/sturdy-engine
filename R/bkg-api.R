@@ -8,12 +8,12 @@
 # library(plumber)
 
 # Grab model from pinboard ------------------------------------------------
-pin_board <- 
+pin_board <-
   pins::board_folder(fs::path_wd("data/models/"))
 
 
 
-v_model_from_pin <- 
+v_model_from_pin <-
   vetiver::vetiver_pin_read(
     board = pin_board,
     name = "payroll-model"

@@ -9,5 +9,5 @@ v <- vetiver_pin_read(b, "payroll-model", version = "20250226T194040Z-da749")
 
 #* @plumber
 function(pr) {
-    pr %>% vetiver_api(v)
+  pr %>% vetiver_api(v)
 }
