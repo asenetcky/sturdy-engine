@@ -20,16 +20,16 @@ full_statement <-
 
 datasets <-
   years |>
-    purrr::map(
-      \(year) {
-        statement <-
-          glue::glue(
-            "{full_statement}{year}"
-          )
+  purrr::map(
+    \(year) {
+      statement <-
+        glue::glue(
+          "{full_statement}{year}"
+        )
 
-        RSocrata::read.socrata(statement)
-      }
-    )
+      RSocrata::read.socrata(statement)
+    }
+  )
 
 # data <-
 #   RSocrata::read.socrata(glue::glue("{full_statement}2025"))
