@@ -9,7 +9,7 @@ resource <- "resource/9m78-yc88.json"
 where_clause <- "?$where="
 
 
-years <- c("2025", "2024", "2023")
+years <- c("2025", "2024")
 
 calendar_clause <- "calendar_year="
 
@@ -44,3 +44,4 @@ nanoparquet::write_parquet(
   "data/payroll-2023-2025.parquet",
   compression = "gzip"
 )
+rm(chonker, datasets)
