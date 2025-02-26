@@ -64,7 +64,7 @@ predictions <-
 
 # This model is nonsense and this isn't not even the best way
 # to go about it nowawdays, but it's a simple example
-model <- lm( annual_rate ~ calendar_year + deptid + job_title, training)
+model <- lm(annual_rate ~ calendar_year + deptid + job_title, training)
 summary(model)
 
 ## Prep Vetiver
@@ -155,4 +155,3 @@ looksy <-
   )
 
 View(looksy)
-
