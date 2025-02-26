@@ -62,9 +62,10 @@ predictions <-
   dplyr::anti_join(training, by = "id")
 
 
-model <- lm(annual_rate ~ calendar_year + deptid + job_title, training)
+# This model is nonsense and this isn't not even the best way
+# to go about it nowawdays, but it's a simple example
+model <- lm( annual_rate ~ calendar_year + deptid + job_title, training)
 summary(model)
-
 
 ## Prep Vetiver
 prototype <-
@@ -97,39 +98,61 @@ vetiver::vetiver_pin_write(
 
 ## Serve model from pin
 
-pin_board <- board_folder(fs::path_wd("data/models/"))
+# create a pin board
+pin_board <- pins::board_folder(fs::path_wd("data/models/"))
 
-v_model_from_pin <- vetiver_pin_read(
-  board = pin_board,
-  name = "penguin_model"
-)
-
-
-
-## db setup
-
-con <- DBI::dbConnect(duckdb::duckdb(), dbdir = "my-db.duckdb")
-DBI::dbWriteTable(con, "penguins", palmerpenguins::penguins)
-DBI::dbDisconnect(con)
+# this board is in the repo BUT it can be anywhere locally, onedrive
+# an amazon s3 bucket or whatever
 
 
 
+
+## Yes, I know the model is still in memory, but if it wasn't
+## and we were picking up from where we left off
+## you can just pull in the local model
+## you can also version it, and write little "cards" on how to
+## use and assess the model and how to look out for drift, it's
+## strengths and weaknessess etc..
+
+v_model_from_pin <-
+  vetiver::vetiver_pin_read(
+    board = pin_board,
+    name = "payroll_model"
+  )
 
 ## deploy the model
+plumber::pr() |>
+  vetiver::vetiver_api(v_model_from_pin) |>
+  plumber::pr_run(port = 8080)
 
-pr() |>
-  vetiver_api(v_model_from_pin) |>
-  pr_run(port = 8080)
 ## model endpoint
-
-endpoint <- vetiver_endpoint("http://127.0.0.1:8080/predict")
+endpoint <- vetiver::vetiver_endpoint("http://127.0.0.1:8080/predict")
 endpoint
+
+# source the bkg-api as a abckground job
+# you can do it programmatically or manually
 
 ## predictions
 
-new_penguins <-
-  df |>
-  slice_sample(n = 20) |>
-  select(bill_length_mm, species, sex)
+new_payroll_master <-
+  predictions |>
+  dplyr::slice_sample(n = 20)
 
-predict(endpoint, new_penguins)
+new_payroll <-
+  new_payroll_master |>
+  dplyr::select(calendar_year, deptid, job_title)
+
+pred <- predict(endpoint, new_payroll)
+pred
+
+looksy <-
+  dplyr::bind_cols(
+    new_payroll_master,
+    pred
+  ) |>
+  dplyr::mutate(
+    pred_errors = .pred - annual_rate
+  )
+
+View(looksy)
+
