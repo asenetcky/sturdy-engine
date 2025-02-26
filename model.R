@@ -13,10 +13,10 @@ data <-
     annual_rate
   ) |>
   dplyr::filter(
-   dplyr::if_all(
-     dplyr::everything(),
-     \(x) !is.na(x)
-   )
+    dplyr::if_all(
+      dplyr::everything(),
+      \(x) !is.na(x)
+    )
   )
 
 # highly recommend duckdb for big datasets
@@ -62,7 +62,7 @@ predictions <-
   dplyr::anti_join(training, by = "id")
 
 
-model <- lm( annual_rate ~ calendar_year + deptid + job_title, training)
+model <- lm(annual_rate ~ calendar_year + deptid + job_title, training)
 summary(model)
 
 
